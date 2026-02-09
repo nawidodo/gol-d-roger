@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gold Portfolio Tracker</title>
     <meta name="description" content="Track your gold purchases and monitor portfolio value in real-time">
-    
+
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -71,56 +73,30 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="weight">Weight (grams) *</label>
-                        <input 
-                            type="number" 
-                            id="weight" 
-                            step="0.01" 
-                            min="0.01" 
-                            required 
-                            placeholder="e.g., 1.00"
-                        >
+                        <select id="weight" required>
+                            <option value="">Select weight...</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="purchasePrice">Price per Gram (Rp) *</label>
-                        <input 
-                            type="number" 
-                            id="purchasePrice" 
-                            step="1" 
-                            min="1" 
-                            required 
-                            placeholder="e.g., 1041000"
-                        >
+                        <label for="totalPriceInput">Total Purchase Price (Rp) *</label>
+                        <input type="number" id="totalPriceInput" step="1" min="1" required placeholder="e.g., 1041000">
                     </div>
 
                     <div class="form-group">
-                        <label for="totalPaid">Total Paid (Rp) *</label>
-                        <input 
-                            type="number" 
-                            id="totalPaid" 
-                            step="1" 
-                            min="1" 
-                            required 
-                            placeholder="Auto-calculated"
-                            readonly
-                        >
+                        <label for="pricePerGramInput">Price per Gram (Rp) *</label>
+                        <input type="number" id="pricePerGramInput" step="1" min="1" required
+                            placeholder="Auto-calculated" readonly>
                     </div>
 
                     <div class="form-group">
                         <label for="purchaseDate">Purchase Date *</label>
-                        <input 
-                            type="date" 
-                            id="purchaseDate" 
-                            required
-                        >
+                        <input type="date" id="purchaseDate" required>
                     </div>
 
                     <div class="form-group full-width">
                         <label for="notes">Notes (optional)</label>
-                        <textarea 
-                            id="notes" 
-                            placeholder="e.g., Bought from Galeri24 Jakarta"
-                        ></textarea>
+                        <textarea id="notes" placeholder="e.g., Bought from Galeri24 Jakarta"></textarea>
                     </div>
 
                     <div class="form-group full-width">
@@ -141,4 +117,5 @@
 
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
+
 </html>

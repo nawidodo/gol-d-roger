@@ -22,20 +22,25 @@ function setupFormHandlers() {
     const form = document.getElementById('purchaseForm');
     form.addEventListener('submit', handleFormSubmit);
 
-    // Auto-calculate total when weight or price changes
+    // Auto-calculate price per gram when weight or total price changes
     const weightInput = document.getElementById('weight');
-    const priceInput = document.getElementById('purchasePrice');
+    const totalPriceInput = document.getElementById('totalPriceInput');
 
-    weightInput.addEventListener('input', calculateTotal);
-    priceInput.addEventListener('input', calculateTotal);
+    weightInput.addEventListener('change', calculatePricePerGram);
+    totalPriceInput.addEventListener('input', calculatePricePerGram);
 }
 
-// Calculate total paid
-function calculateTotal() {
+// Calculate price per gram
+function calculatePricePerGram() {
     const weight = parseFloat(document.getElementById('weight').value) || 0;
-    const price = parseFloat(document.getElementById('purchasePrice').value) || 0;
-    const total = weight * price;
-    document.getElementById('totalPaid').value = total.toFixed(2);
+    const total = parseFloat(document.getElementById('totalPriceInput').value) || 0;
+
+    if (weight > 0 && total > 0) {
+        const pricePerGram = total / weight;
+        document.getElementById('pricePerGramInput').value = Math.round(pricePerGram);
+    } else {
+        document.getElementById('pricePerGramInput').value = '';
+    }
 }
 
 // Load current gold prices
@@ -51,6 +56,7 @@ async function loadPrices() {
 
         currentPrices = data;
         displayPriceTicker(data);
+        populateWeightDropdown(data);
     } catch (error) {
         console.error('Error loading prices:', error);
     }
@@ -73,6 +79,34 @@ function displayPriceTicker(priceData) {
         .join('');
 
     ticker.innerHTML = items;
+}
+
+// Populate weight dropdown
+function populateWeightDropdown(priceData) {
+    const select = document.getElementById('weight');
+    const currentSelection = select.value;
+
+    // Clear existing options (keep the first one)
+    while (select.options.length > 1) {
+        select.remove(1);
+    }
+
+    if (!priceData.data) return;
+
+    // Sort weights numerically
+    const weights = Object.keys(priceData.data).sort((a, b) => parseFloat(a) - parseFloat(b));
+
+    weights.forEach(weight => {
+        const option = document.createElement('option');
+        option.value = weight;
+        option.textContent = `${weight}g`;
+        select.appendChild(option);
+    });
+
+    // Restore selection if it exists
+    if (currentSelection) {
+        select.value = currentSelection;
+    }
 }
 
 // Load purchases
@@ -189,8 +223,8 @@ async function handleFormSubmit(e) {
 
     const formData = {
         weight: parseFloat(document.getElementById('weight').value),
-        purchase_price: parseFloat(document.getElementById('purchasePrice').value),
-        total_paid: parseFloat(document.getElementById('totalPaid').value),
+        purchase_price: parseFloat(document.getElementById('pricePerGramInput').value),
+        total_paid: parseFloat(document.getElementById('totalPriceInput').value),
         purchase_date: document.getElementById('purchaseDate').value,
         notes: document.getElementById('notes').value
     };
@@ -236,8 +270,11 @@ function editPurchase(id) {
     document.querySelector('.section-title').textContent = '✏️ Edit Purchase';
 
     document.getElementById('weight').value = purchase.weight;
-    document.getElementById('purchasePrice').value = purchase.purchase_price;
-    document.getElementById('totalPaid').value = purchase.total_paid;
+    document.getElementById('totalPriceInput').value = purchase.total_paid;
+
+    // Trigger calculation to update price per gram
+    calculatePricePerGram();
+
     document.getElementById('purchaseDate').value = purchase.purchase_date.split('T')[0];
     document.getElementById('notes').value = purchase.notes || '';
 
