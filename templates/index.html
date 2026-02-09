@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Portfolio Tracker</title>
+    <meta name="description" content="Track your gold purchases and monitor portfolio value in real-time">
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1>💰 Gold Portfolio Tracker</h1>
+            <div id="priceTicker" class="price-ticker">
+                <div class="ticker-item">Loading prices...</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Dashboard Cards -->
+        <section class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">⚖️</span>
+                    <h3 class="card-title">Total Gold</h3>
+                </div>
+                <div id="totalWeight" class="card-value">0g</div>
+                <p class="card-subtitle">Total weight owned</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">💵</span>
+                    <h3 class="card-title">Total Invested</h3>
+                </div>
+                <div id="totalInvested" class="card-value">Rp0</div>
+                <p class="card-subtitle">Amount paid</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📈</span>
+                    <h3 class="card-title">Current Value</h3>
+                </div>
+                <div id="currentValue" class="card-value">Rp0</div>
+                <p class="card-subtitle">Based on current prices</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">💎</span>
+                    <h3 class="card-title">Profit/Loss</h3>
+                </div>
+                <div id="profitLoss" class="card-value">Rp0</div>
+                <p id="profitPercentage" class="card-subtitle">0%</p>
+            </div>
+        </section>
+
+        <!-- Add Purchase Form -->
+        <section class="form-section">
+            <h2 class="section-title">➕ Add Purchase</h2>
+            <form id="purchaseForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="weight">Weight (grams) *</label>
+                        <input 
+                            type="number" 
+                            id="weight" 
+                            step="0.01" 
+                            min="0.01" 
+                            required 
+                            placeholder="e.g., 1.00"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="purchasePrice">Price per Gram (Rp) *</label>
+                        <input 
+                            type="number" 
+                            id="purchasePrice" 
+                            step="1" 
+                            min="1" 
+                            required 
+                            placeholder="e.g., 1041000"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="totalPaid">Total Paid (Rp) *</label>
+                        <input 
+                            type="number" 
+                            id="totalPaid" 
+                            step="1" 
+                            min="1" 
+                            required 
+                            placeholder="Auto-calculated"
+                            readonly
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="purchaseDate">Purchase Date *</label>
+                        <input 
+                            type="date" 
+                            id="purchaseDate" 
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="notes">Notes (optional)</label>
+                        <textarea 
+                            id="notes" 
+                            placeholder="e.g., Bought from Galeri24 Jakarta"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn">Save Purchase</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Purchase History -->
+        <section class="purchase-list">
+            <h2 class="section-title">📜 Purchase History</h2>
+            <div id="purchaseList">
+                <div class="loading">Loading purchases...</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
