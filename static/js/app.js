@@ -21,26 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupFormHandlers() {
     const form = document.getElementById('purchaseForm');
     form.addEventListener('submit', handleFormSubmit);
-
-    // Auto-calculate price per gram when weight or total price changes
-    const weightInput = document.getElementById('weight');
-    const totalPriceInput = document.getElementById('totalPriceInput');
-
-    weightInput.addEventListener('change', calculatePricePerGram);
-    totalPriceInput.addEventListener('input', calculatePricePerGram);
 }
 
-// Calculate price per gram
+// Calculate price per gram (internal calculation only)
 function calculatePricePerGram() {
     const weight = parseFloat(document.getElementById('weight').value) || 0;
     const total = parseFloat(document.getElementById('totalPriceInput').value) || 0;
 
     if (weight > 0 && total > 0) {
-        const pricePerGram = total / weight;
-        document.getElementById('pricePerGramInput').value = Math.round(pricePerGram);
-    } else {
-        document.getElementById('pricePerGramInput').value = '';
+        return total / weight;
     }
+    return 0;
 }
 
 // Load current gold prices
@@ -221,10 +212,14 @@ function displayPortfolio(data) {
 async function handleFormSubmit(e) {
     e.preventDefault();
 
+    const weight = parseFloat(document.getElementById('weight').value);
+    const totalPaid = parseFloat(document.getElementById('totalPriceInput').value);
+    const pricePerGram = weight > 0 ? totalPaid / weight : 0;
+
     const formData = {
-        weight: parseFloat(document.getElementById('weight').value),
-        purchase_price: parseFloat(document.getElementById('pricePerGramInput').value),
-        total_paid: parseFloat(document.getElementById('totalPriceInput').value),
+        weight: weight,
+        purchase_price: pricePerGram,
+        total_paid: totalPaid,
         purchase_date: document.getElementById('purchaseDate').value,
         notes: document.getElementById('notes').value
     };
@@ -271,10 +266,6 @@ function editPurchase(id) {
 
     document.getElementById('weight').value = purchase.weight;
     document.getElementById('totalPriceInput').value = purchase.total_paid;
-
-    // Trigger calculation to update price per gram
-    calculatePricePerGram();
-
     document.getElementById('purchaseDate').value = purchase.purchase_date.split('T')[0];
     document.getElementById('notes').value = purchase.notes || '';
 
