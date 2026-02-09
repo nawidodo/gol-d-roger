@@ -145,20 +145,23 @@ def get_portfolio():
         total_invested = sum(float(p.total_paid) for p in purchases)
         
         # Calculate current value (using buy price from Galeri24)
-        # We'll use the closest weight or calculate average price per gram
+        # Calculate average price per gram from all available weights
         current_value = 0
         if purchases and current_prices.get("data"):
             # Get average current buy price per gram from available weights
             prices_data = current_prices["data"]
-            total_price = 0
+            total_price_per_gram = 0
             count = 0
             for weight_str, price_info in prices_data.items():
                 if "buy" in price_info:
-                    total_price += float(price_info["buy"])
+                    weight = float(weight_str)
+                    buy_price = float(price_info["buy"])
+                    price_per_gram = buy_price / weight
+                    total_price_per_gram += price_per_gram
                     count += 1
             
             if count > 0:
-                avg_price_per_gram = total_price / count / float(list(prices_data.keys())[0])
+                avg_price_per_gram = total_price_per_gram / count
                 current_value = total_weight * avg_price_per_gram
         
         profit_loss = current_value - total_invested
